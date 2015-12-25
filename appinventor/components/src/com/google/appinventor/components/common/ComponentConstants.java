@@ -68,4 +68,12 @@ public class ComponentConstants {
   public static final int LISTVIEW_PREFERRED_WIDTH = 315;
   public static final int LISTVIEW_PREFERRED_HEIGHT = 40;
   public static final int LISTVIEW_FILTER_PREFERRED_HEIGHT = 30;
+  
+  /**
+   * Abstract Reality Component
+   */
+  
+  public static final int TRANSPARENCY = 100;
+  public static final int ROTATION = 90;
+  
 }

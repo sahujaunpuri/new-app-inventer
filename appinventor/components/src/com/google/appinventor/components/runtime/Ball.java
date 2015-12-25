@@ -16,6 +16,7 @@ import com.google.appinventor.components.common.PropertyTypeConstants;
 import com.google.appinventor.components.common.YaVersion;
 import com.google.appinventor.components.runtime.util.PaintUtil;
 
+import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
@@ -43,30 +44,52 @@ import android.graphics.Paint;
     category = ComponentCategory.ANIMATION)
 @SimpleObject
 public final class Ball extends Sprite {
+	
+ private final Activity context;
+ private final Form form;
   private int radius;
   private int paintColor;
   private Paint paint;
   static final int DEFAULT_RADIUS = 5;
+  private static final float DEFAULT_LINE_WIDTH = 2;
+  private static final int DEFAULT_PAINT_COLOR = Component.COLOR_BLACK;
+  private boolean Fill;
 
   public Ball(ComponentContainer container) {
     super(container);
+  context = container.$context();
+  form = container.$form();
+    
     paint = new Paint();
 
     // Set default properties.
     PaintColor(Component.COLOR_BLACK);
     Radius(DEFAULT_RADIUS);
+    Fill(true);
   }
 
   // Implement or override methods
 
+  //@Override
+  public Activity $context() {
+    return context;
+  }
+
+//  @Override
+  public Form $form() {
+    return form;
+  }
+  
   @Override
   protected void onDraw(Canvas canvas) {
     if (visible) {
       float correctedXLeft = (float)(xLeft * form.deviceDensity());
       float correctedYTop =  (float)(yTop * form.deviceDensity());
       float correctedRadius = radius * form.deviceDensity();
+      Paint p = new Paint(paint);
+      p.setStyle(Fill ? Paint.Style.FILL : Paint.Style.STROKE);
       canvas.drawCircle(correctedXLeft + correctedRadius, correctedYTop +
-          correctedRadius, correctedRadius, paint);
+          correctedRadius, correctedRadius, p);
     }
   }
 
@@ -158,4 +181,53 @@ public final class Ball extends Sprite {
     }
     registerChange();
   }
+  
+  /**
+   * Returns the currently specified stroke width
+   * @return width
+   */
+  @SimpleProperty(
+      description = "The width of line.",
+      category = PropertyCategory.APPEARANCE)
+  public float LineWidth() {
+    return paint.getStrokeWidth() / $form().deviceDensity();
+  }
+
+  /**
+   * Specifies the stroke width
+   *
+   * @param width
+   */
+  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_NON_NEGATIVE_FLOAT,
+      defaultValue = DEFAULT_LINE_WIDTH + "")
+  @SimpleProperty
+  public void LineWidth(float width) {
+    paint.setStrokeWidth(width * $form().deviceDensity());
+  }
+  
+  /**
+   * Returns true if the ball is to be filled
+   *
+   * @return {@code true} indicates that ball will be filled, {@code false} will not
+   */
+  @SimpleProperty(
+    category = PropertyCategory.BEHAVIOR)
+  public boolean Fill() {
+    return Fill;
+  }
+
+  /**
+   * Specifies whether the will be filled
+   *
+   * @param front
+   *          {@code true} for front-facing camera, {@code false} for default
+   */
+  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_BOOLEAN, defaultValue = "True")
+  @SimpleProperty(description = "Specifies whether ball will be filled or not. "
+    + "If true, which is default value, it will be filled. "
+    + "Otherwise it will be circle.")
+  public void Fill (boolean newValue) {
+    Fill = newValue;
+  }
+  
 }

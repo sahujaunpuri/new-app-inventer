@@ -2148,6 +2148,10 @@ public interface OdeMessages extends Messages {
   String tinyDBComponentPallette();
 
   // Media Pallette
+  @DefaultMessage("AbstractReality")
+  @Description("")
+  String abstractRealityComponentPallette();
+  
   @DefaultMessage("Camcorder")
   @Description("")
   String camcorderComponentPallette();
@@ -3203,6 +3207,14 @@ public interface OdeMessages extends Messages {
   @DefaultMessage("WebViewString")
   @Description("")
   String WebViewStringProperties();
+  
+  @DefaultMessage("SetTransparency")
+  @Description("")
+  String SetTransparencyProperties();
+
+  @DefaultMessage("CameraRotation")
+  @Description("")
+  String CameraRotationProperties();
 
   //Params
   @DefaultMessage("xAccel")
@@ -5588,5 +5600,36 @@ public interface OdeMessages extends Messages {
   @DefaultMessage("PostMedia")
   @Description("")
   String PostMediaMethods();
+  
+  /**
+   * @author tomislav tomsic
+   * @email:tomsict@gmail.com
+   * TODO: Added for Abstract Reality Component 
+   * and further local development. Should put them into
+   * appropriate place 
+   */
+  
+  @DefaultMessage("StartAbstractReality")
+  @Description("Wow")
+  String StartAbstractRealityMethods();
+  
+  @DefaultMessage("AddArtefactToAbstractReality")
+  @Description("Wow")
+  String AddArtefactMethods();  
+  
+  @DefaultMessage("RemoveComponentFromAbstractReality")
+  @Description("Remove an artefact from abstract reality")
+  String RemoveArtefactMethods();  
 
+  @DefaultMessage("setARCameraBackground")
+  @Description("")
+  String SetARBackgroundMethods();
+  
+  @DefaultMessage("UseFront")
+  @Description("")
+  String UseFrontCameraProperties();
+  
+  @DefaultMessage("Fill")
+  @Description("")
+  String FillProperties();
 }

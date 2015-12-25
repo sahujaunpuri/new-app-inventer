@@ -954,6 +954,9 @@ public class YaVersion {
 
   //For PROXIMITYSENSOR_COMPONENT_VERSION: Initial Version
   public static final int PROXIMITYSENSOR_COMPONENT_VERSION = 1;
+  
+  //For AbstractReality Component
+  public static final int ABSTRACT_REALITY_COMPONENT_VERSION = 1;
 
   // Rendezvous Server Location
 

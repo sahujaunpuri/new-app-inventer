@@ -334,9 +334,10 @@ public final class Compiler {
           "package=\"" + packageName + "\" " +
           // TODO(markf): uncomment the following line when we're ready to enable publishing to the
           // Android Market.
-         "android:versionCode=\"" + vCode +"\" " + "android:versionName=\"" + vName + "\" " +
+          "android:versionCode=\"" + vCode +"\" " + "android:versionName=\"" + vName + "\" " + 
+          "android:installLocation=\"preferExternal\" "+
           ">\n");
-
+      
       // If we are building the Wireless Debugger (AppInventorDebugger) add the uses-feature tag which
       // is used by the Google Play store to determine which devices the app is available for. By adding
       // these lines we indicate that we use these features BUT THAT THEY ARE NOT REQUIRED so it is ok
