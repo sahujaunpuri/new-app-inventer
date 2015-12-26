@@ -1,10 +1,22 @@
 package com.google.appinventor.components.runtime;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.SurfaceTexture;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
+import android.hardware.Camera.PictureCallback;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
@@ -29,9 +41,9 @@ import com.google.appinventor.components.common.YaVersion;
 
 /**
  * @author: Tomislav Tomsic
- * @email:tomsict@gmail.com Duplication of logic in methods is for forward
+ * @email: tomsict@gmail.com Duplication of logic in methods is for forward
  *                          compatibility reasons i.e. it allows us more
- *                          flexiblity
+ *                          future flexiblity imo.
  */
 
 @DesignerComponent(version = YaVersion.ABSTRACT_REALITY_COMPONENT_VERSION, description = "A component to take a picture using the device's camera. "
@@ -55,30 +67,29 @@ public class AbstractReality extends AndroidNonvisibleComponent implements
 	private final Form form;
 	private int transparency = ComponentConstants.TRANSPARENCY;
 	private int rotation = ComponentConstants.ROTATION;
-    private int width;
-    private int height;
-    private boolean useFrontCamera;
-	
+	private int width;
+	private int height;
+	private boolean useFrontCamera;
+	private static final String LOG_TAG = "AbstractRealityComponent";
+
 	public AbstractReality(ComponentContainer container) {
 		super(container.$form());
 		// time saving shortcuts
 		context = container.$context();
 		this.form = container.$form();
-		
-	    // Default property values.
-	    UseFrontCamera(false);
-	    /*
-		*initializing Camera preview to desired values,
-		*in case none are set.
-		*/
+
+		// Default property values.
+		UseFrontCamera(false);
+		/*
+		 * initializing Camera preview to desired values,in case none are set.
+		 */
 		width = myRootLayout.getWidth();
 		height = myRootLayout.getHeight();
-		
+
 		handler = new Handler();
 		/*
-		 * 		Crucial bit of code.
-		*TextureView needs a hardware acceleration, 
-		*or it would never call a camera.
+		 * Crucial bit of code.TextureView needs a hardware acceleration,or it
+		 * would never call a camera.
 		 */
 
 		container
@@ -93,13 +104,13 @@ public class AbstractReality extends AndroidNonvisibleComponent implements
 	public void onSurfaceTextureAvailable(SurfaceTexture surface, int width,
 			int height) {
 
-		if (UseFrontCamera()){
-			myCamera = openFrontFacingCamera();			
-		} else 		
-		myCamera = android.hardware.Camera.open();
-		//Camera.Size previewSize = myCamera.getParameters().getPreviewSize();
-		myTextureView.setLayoutParams(new FrameLayout.LayoutParams(
-				width, height, Gravity.CENTER));
+		if (UseFrontCamera()) {
+			myCamera = openFrontFacingCamera();
+		} else
+			myCamera = android.hardware.Camera.open();
+		// Camera.Size previewSize = myCamera.getParameters().getPreviewSize();
+		myTextureView.setLayoutParams(new FrameLayout.LayoutParams(width,
+				height, Gravity.CENTER));
 
 		try {
 			myCamera.setPreviewTexture(surface);
@@ -164,8 +175,6 @@ public class AbstractReality extends AndroidNonvisibleComponent implements
 
 		myRootLayout.setLayoutParams(layoutParams);
 
-		
-
 		ViewGroup parent = (ViewGroup) component.getView().getParent();
 		parent.removeView(component.getView());
 		handler.post(new Runnable() {
@@ -229,7 +238,8 @@ public class AbstractReality extends AndroidNonvisibleComponent implements
 		} else if (transparency < 0) {
 			transparency = 0;
 		}
-
+		//Alpha values are between 0 and 1, which is why we have to 
+		//divide input by 100
 		float alpha = transparency / 100;
 		myTextureView.setAlpha(alpha);
 
@@ -255,87 +265,195 @@ public class AbstractReality extends AndroidNonvisibleComponent implements
 
 		myTextureView.setRotation(rotation);
 	}
-	
-	/**
-	   * Returns the camera's preview horizontal width, measured in pixels.
-	   *
-	   * @return  width in pixels
-	   */
-	  @SimpleProperty
-	  public int Width() {
-		  return width;
-	  }
-	  
-	  /**
-	   * Specifies the camera's preview horizontal width, measured in pixels.
-	   *
-	   * @param  width in pixels
-	   */
-	  @SimpleProperty
-	  public void Width(int width) {
-		  this.width = width;
-	  }
 
-	  /**
-	   * Returns the component's horizontal height, measured in pixels.
-	   *
-	   * @return  height in pixels
-	   */
-	  @SimpleProperty
+	/**
+	 * Returns the camera's preview horizontal width, measured in pixels.
+	 *
+	 * @return width in pixels
+	 */
+	@SimpleProperty
+	public int Width() {
+		return width;
+	}
+
+	/**
+	 * Specifies the camera's preview horizontal width, measured in pixels.
+	 *
+	 * @param width
+	 *            in pixels
+	 */
+	@SimpleProperty
+	public void Width(int width) {
+		this.width = width;
+	}
+
+	/**
+	 * Returns the component's horizontal height, measured in pixels.
+	 *
+	 * @return height in pixels
+	 */
+	@SimpleProperty
 	public int Height() {
 		return height;
 	}
 
-	  /**
-	   * Specifies the component's horizontal height, measured in pixels.
-	   *
-	   * @param  height in pixels
-	   */
-	  @SimpleProperty
+	/**
+	 * Specifies the component's horizontal height, measured in pixels.
+	 *
+	 * @param height
+	 *            in pixels
+	 */
+	@SimpleProperty
 	public void Height(int height) {
 		this.height = height;
-	}	  
-	  
-	  private Camera openFrontFacingCamera() {
-		    int cameraCount = 0;
-		    Camera frontCamera = null;
-		    Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-		    cameraCount = Camera.getNumberOfCameras();
-		    for (int camNumber = 0; camNumber<cameraCount; camNumber++) {
-		        Camera.getCameraInfo(camNumber, cameraInfo);
-		        if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-		            try {
-		                frontCamera = Camera.open(camNumber);
-		            } catch (RuntimeException e) {
-		                Log.e("AbstractReality Component", "Front Camera failed to open: " + e.getLocalizedMessage());
-		            }
-		        }
-		    }
-		    return frontCamera;
+	}
+
+	private Camera openFrontFacingCamera() {
+		int cameraCount = 0;
+		Camera frontCamera = null;
+		Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+		cameraCount = Camera.getNumberOfCameras();
+		for (int camNumber = 0; camNumber < cameraCount; camNumber++) {
+			Camera.getCameraInfo(camNumber, cameraInfo);
+			if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+				try {
+					frontCamera = Camera.open(camNumber);
+				} catch (RuntimeException e) {
+					Log.e(LOG_TAG, "AbstractReality Component, Front Camera failed to open: "
+									+ e.getLocalizedMessage());
+				}
+			}
+		}
+		return frontCamera;
+	}
+
+	/**
+	 * Returns true if the front-facing camera is to be used (when available)
+	 *
+	 * @return {@code true} indicates front-facing is to be used, {@code false}
+	 *         will open default
+	 */
+	@SimpleProperty(category = PropertyCategory.BEHAVIOR)
+	public boolean UseFrontCamera() {
+		return useFrontCamera;
+	}
+
+	/**
+	 * Specifies whether the front-facing camera should be used (when available)
+	 *
+	 * @param front
+	 *            {@code true} for front-facing camera, {@code false} for
+	 *            default
+	 */
+	@DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_BOOLEAN, defaultValue = "False")
+	@SimpleProperty(description = "Specifies whether the front-facing camera should be used (when available). "
+			+ "If the device does not have a front-facing camera, this option will be ignored "
+			+ "and the camera will open normally.")
+	public void UseFrontCamera(boolean front) {
+		useFrontCamera = front;
+	}
+
+	/**
+	 * Takes a picture, then raises the AfterPicture event. If useFront is true,
+	 * adds an extra to the intent that requests the front-facing camera.
+	 */
+	@SimpleFunction
+	public void TakePicture() {
+
+		myCamera.takePicture(null, null, new ARHandlingAndMergingPictures(
+				context));
+
+	}
+
+	public class ARHandlingAndMergingPictures implements PictureCallback {
+
+		private final Context context;
+		private Bitmap bitmap;
+		private Long topPhotoLong;
+		private static final String LOG_TAG = "ARHandlingAndMergingPictures";
+		public ARHandlingAndMergingPictures(Context context) {
+			this.context = context;
 		}
 
-	  /**
-	   * Returns true if the front-facing camera is to be used (when available)
-	   *
-	   * @return {@code true} indicates front-facing is to be used, {@code false} will open default
-	   */
-	  @SimpleProperty(
-	    category = PropertyCategory.BEHAVIOR)
-	  public boolean UseFrontCamera() {
-	    return useFrontCamera;
-	  }
+		/**
+		 * Following code was inspired by jiahaoliuliu/RealMadridvsBorussia
+		 * project on github, of which important parts were used verbatim
+		 */
+		@SuppressWarnings("deprecation")
+		@Override
+		public void onPictureTaken(byte[] data, Camera myCamera) {
+			// TODO Auto-generated method stub
+			java.io.File sdDir = Environment
+					.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+			java.io.File pictureFileDir = new java.io.File(sdDir,
+					"/ARArtefacts");
 
-	  /**
-	   * Specifies whether the front-facing camera should be used (when available)
-	   *
-	   * @param front
-	   *          {@code true} for front-facing camera, {@code false} for default
-	   */
-	  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_BOOLEAN, defaultValue = "False")
-	  @SimpleProperty(description = "Specifies whether the front-facing camera should be used (when available). "
-	    + "If the device does not have a front-facing camera, this option will be ignored "
-	    + "and the camera will open normally.")
-	  public void UseFrontCamera(boolean front) {
-	    useFrontCamera = front;
-	  }
+			if (!pictureFileDir.exists() && !pictureFileDir.mkdirs()) {
+
+				Log.d(LOG_TAG, "Directory for saving image can not be created.");
+				Toast.makeText(context,
+						"Can't create directory to save image.",
+						Toast.LENGTH_LONG).show();
+				return;
+			}
+
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyymmddhhmmss");
+			String date = dateFormat.format(new Date());
+			String photoFile = "Picture_" + date + ".jpg";
+
+			String filename = pictureFileDir.getPath() + java.io.File.separator
+					+ photoFile;
+
+			java.io.File pictureFile = new java.io.File(filename);
+			try {
+				FileOutputStream fos = new FileOutputStream(pictureFile);
+				fos.write(data);
+				fos.close();
+				Toast.makeText(context, "New Image saved:" + photoFile,
+						Toast.LENGTH_LONG).show();
+
+				// TODO: Merge the photo
+				try {
+					Bitmap bottomImage = BitmapFactory.decodeFile(pictureFile
+							.getAbsolutePath()); // blue
+
+					bitmap = Bitmap.createBitmap(bottomImage.getWidth(),
+							bottomImage.getHeight(), Bitmap.Config.ARGB_8888);
+					android.graphics.Canvas c = new android.graphics.Canvas(
+							bitmap);
+					Resources res = context.getResources();
+
+					Bitmap topImage = BitmapFactory.decodeResource(res,
+							topPhotoLong.intValue()); // green
+					@SuppressWarnings("deprecation")
+					Drawable drawable1 = new BitmapDrawable(bottomImage);
+					Drawable drawable2 = new BitmapDrawable(topImage);
+
+					drawable1.setBounds(0, 0, bottomImage.getWidth(),
+							bottomImage.getHeight());
+					drawable2.setBounds(0, 0, bottomImage.getWidth(),
+							bottomImage.getHeight());
+					drawable1.draw(c);
+					drawable2.draw(c);
+
+				} catch (Exception e) {
+				}
+				// To write the file out to the SDCard:
+				OutputStream os = null;
+				try {
+					os = new FileOutputStream(filename);
+					bitmap.compress(Bitmap.CompressFormat.PNG, 50, os);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} catch (Exception error) {
+				Log.d(LOG_TAG,
+						"File" + filename + "not saved: " + error.getMessage());
+				Toast.makeText(context, "Image could not be saved.",
+						Toast.LENGTH_LONG).show();
+			}
+		}
+
+	}
+
 }
