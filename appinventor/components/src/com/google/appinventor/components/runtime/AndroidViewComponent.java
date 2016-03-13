@@ -36,7 +36,6 @@ public abstract class AndroidViewComponent extends VisibleComponent {
   private int column = ComponentConstants.DEFAULT_ROW_COLUMN;
   private int row = ComponentConstants.DEFAULT_ROW_COLUMN;
   
-  private int transparency = ComponentConstants.TRANSPARENCY;
 
   /**
    * Creates a new AndroidViewComponent.
@@ -77,34 +76,6 @@ public abstract class AndroidViewComponent extends VisibleComponent {
     getView().setVisibility(visibility ? View.VISIBLE : View.GONE);
   }
   
-  /**
-   * Sets component transparency,
-   * a handy property to have when creating scenes
-   * and artefacts in abstract realities.
-   */
-  
-	@SimpleProperty(category = PropertyCategory.APPEARANCE)
-	public int SetTransparency() {
-		return transparency;
-	}
-
-	@DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_INTEGER, defaultValue = "100")
-	@SimpleProperty(description = "Specifies whether the component should be transparent on the screen. "
-			+ "Zero is for completely transparent and 100 for opaque")
-	public void SetTransparency(int transparency) {
-		this.transparency = transparency;
-
-		if (transparency > 100) {
-			transparency = 100;
-		} else if (transparency < 0) {
-			transparency = 0;
-		}
-
-		float alpha = transparency / 100;
-		getView().setAlpha(alpha);
-
-	}  
-
   /**
    * Returns the component's horizontal width, measured in pixels.
    *
