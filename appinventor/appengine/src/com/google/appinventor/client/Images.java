@@ -502,4 +502,9 @@ public interface Images extends Resources {
   @Source("com/google/appinventor/images/proximitysensor.png")
   ImageResource proximitysensor();
 
+  /**
+   * Designer palette item: abstractreality component
+   */
+  @Source("com/google/appinventor/images/abstractreality.png")
+  ImageResource abstractreality();
 }

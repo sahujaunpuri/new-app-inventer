@@ -14,6 +14,7 @@ import com.google.appinventor.components.annotations.SimpleFunction;
 import com.google.appinventor.components.annotations.SimpleObject;
 import com.google.appinventor.components.annotations.SimpleProperty;
 import com.google.appinventor.components.annotations.UsesAssets;
+import com.google.appinventor.components.annotations.UsesFeatures;
 import com.google.appinventor.components.annotations.UsesLibraries;
 import com.google.appinventor.components.annotations.UsesNativeLibraries;
 import com.google.appinventor.components.annotations.UsesPermissions;
@@ -88,7 +89,8 @@ public abstract class ComponentProcessor extends AbstractProcessor {
       "com.google.appinventor.components.annotations.UsesAssets",
       "com.google.appinventor.components.annotations.UsesLibraries",
       "com.google.appinventor.components.annotations.UsesNativeLibraries",
-      "com.google.appinventor.components.annotations.UsesPermissions");
+      "com.google.appinventor.components.annotations.UsesPermissions",
+      "com.google.appinventor.components.annotations.UsesFeatures");
 
   // Returned by getRwString()
   private static final String READ_WRITE = "read-write";
@@ -426,7 +428,12 @@ public abstract class ComponentProcessor extends AbstractProcessor {
      * @see android.Manifest.permission
      */
     protected final Set<String> permissions;
-
+    
+    /**
+     * Features required by this component.
+     */
+    protected final Set<String> features;
+    
     /**
      * Libraries required by this component.
      */
@@ -495,6 +502,7 @@ public abstract class ComponentProcessor extends AbstractProcessor {
             "Component");
       displayName = getDisplayNameForComponentType(name);
       permissions = Sets.newHashSet();
+      features = Sets.newHashSet();
       libraries = Sets.newHashSet();
       nativeLibraries = Sets.newHashSet();
       assets = Sets.newHashSet();
@@ -740,6 +748,7 @@ public abstract class ComponentProcessor extends AbstractProcessor {
       if (parentComponent != null) {
         // Copy its build info, designer properties, properties, methods, and events.
         componentInfo.permissions.addAll(parentComponent.permissions);
+        componentInfo.features.addAll(parentComponent.features);
         componentInfo.libraries.addAll(parentComponent.libraries);
         componentInfo.nativeLibraries.addAll(parentComponent.nativeLibraries);
         componentInfo.assets.addAll(parentComponent.assets);
@@ -770,6 +779,14 @@ public abstract class ComponentProcessor extends AbstractProcessor {
         componentInfo.permissions.add(permission.trim());
       }
     }
+    
+    //Gather features
+UsesFeatures usesFeatures = element.getAnnotation(UsesFeatures.class);
+if(usesFeatures != null){
+	for(String feature : usesFeatures.featureNames().split(",")){
+		componentInfo.features.add(feature.trim());
+	}
+}
 
     // Gather library names.
     UsesLibraries usesLibraries = element.getAnnotation(UsesLibraries.class);

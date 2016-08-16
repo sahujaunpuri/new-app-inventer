@@ -59,6 +59,10 @@ public abstract class TextBoxBase extends AndroidViewComponent
 
   // This is our handle on Android's nice 3-d default textbox.
   private Drawable defaultTextBoxDrawable;
+  
+  //Cursor position
+  private int cursorPosition;
+  
 
   /**
    * Creates a new TextBoxBase component
@@ -101,6 +105,7 @@ public abstract class TextBoxBase extends AndroidViewComponent
     Hint("");
     Text("");
     TextColor(Component.COLOR_BLACK);
+    cursorPosition  = 0;
   }
 
   @Override
@@ -441,6 +446,30 @@ public abstract class TextBoxBase extends AndroidViewComponent
   }
 
   /**
+   * Returns the position of a cursor in a textbox,
+   * as an integer.
+   *
+   * @return  text RGB color with alpha
+   */
+  @SimpleProperty(
+      category = PropertyCategory.APPEARANCE,
+      description = "Cursor positin in a given text.")  
+  public int CursorPosition() {
+	return cursorPosition;
+}
+  /**
+   * Specifies the position of a cursor in a textbox's.
+   *
+   * @param argb  text RGB color with alpha
+   */
+  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_INTEGER,
+      defaultValue = "0")
+  @SimpleProperty
+public void CursorPosition(int cursorPosition) {
+	this.cursorPosition = cursorPosition;
+}
+  
+/**
    * Request focus to current textbox.
    */
   @SimpleFunction(
@@ -448,10 +477,27 @@ public abstract class TextBoxBase extends AndroidViewComponent
   public void RequestFocus() {
     view.requestFocus();
   }
-
+  
+  @SimpleFunction(
+		    description = "Selects text.")
+  public void SelectText(int start, int end) {
+	    view.setSelection(start, end);
+	  }
+   
+  @SimpleFunction(
+		    description = "Writes text in a new line.")
+public void NewLine() {
+	  System.getProperty("line.separator");
+	  }
+  
+  @SimpleFunction(
+		    description = "Writes text in a new line.")
+public String InsertNewLine() {
+	  return System.getProperty("line.separator");
+	  }
   // OnFocusChangeListener implementation
 
-  @Override
+@Override
   public void onFocusChange(View previouslyFocused, boolean gainFocus) {
     if (gainFocus) {
       // Initialize content backing for input validation

@@ -1000,7 +1000,27 @@ public interface OdeMessages extends Messages {
   @DefaultMessage("oval")
   @Description("Text for button shape choice 'oval'")
   String ovalButtonShape();
+  
+  @DefaultMessage("circle")
+  @Description("Text for button shape choice 'circle'")
+  String circleButtonShape();
+  
+  @DefaultMessage("1st quadrant")
+  @Description("Text for button shape choice '1st quadrant'")
+  String firstQuadrantButtonShape();
 
+  @DefaultMessage("2nd quadrant")
+  @Description("Text for button shape choice '2nd quadrant'")
+  String secondQuadrantButtonShape();
+  
+  @DefaultMessage("3rd quadrant")
+  @Description("Text for button shape choice '3rd quadrant'")
+  String thirdQuadrantButtonShape();
+  
+  @DefaultMessage("4th quadrant")
+  @Description("Text for button shape choice '4th quadrant'")
+  String fourthQuadrantButtonShape();
+  
   // Used in editor/youngandroid/properties/YoungAndroidAssetSelectorPropertyEditor.java
 
   @DefaultMessage("You must select an asset!")
@@ -2152,6 +2172,10 @@ public interface OdeMessages extends Messages {
   @Description("")
   String abstractRealityComponentPallette();
   
+  @DefaultMessage("AugmentedReality")
+  @Description("")
+  String augmentedRealityComponentPallette();
+  
   @DefaultMessage("Camcorder")
   @Description("")
   String camcorderComponentPallette();
@@ -2188,6 +2212,10 @@ public interface OdeMessages extends Messages {
   @DefaultMessage("ImageSprite")
   @Description("")
   String imageSpriteComponentPallette();
+  
+  @DefaultMessage("RealityCanvas")
+  @Description("")
+  String realityCanvasPallette();
 
   // Social
   @DefaultMessage("ContactPicker")
@@ -3207,10 +3235,6 @@ public interface OdeMessages extends Messages {
   @DefaultMessage("WebViewString")
   @Description("")
   String WebViewStringProperties();
-  
-  @DefaultMessage("SetTransparency")
-  @Description("")
-  String SetTransparencyProperties();
 
   @DefaultMessage("CameraRotation")
   @Description("")
@@ -3241,6 +3265,10 @@ public interface OdeMessages extends Messages {
   @Description("")
   String componentParams();
 
+  @DefaultMessage("perspective")
+  @Description("")
+  String perspectiveParams();
+  
   @DefaultMessage("startX")
   @Description("")
   String startXParams();
@@ -3812,6 +3840,38 @@ public interface OdeMessages extends Messages {
   @DefaultMessage("textToTranslate")
   @Description("")
   String textToTranslateParams();
+  
+  @DefaultMessage("leftMargin")
+  @Description("")
+  String leftMarginParams();
+  
+  @DefaultMessage("topMargin")
+  @Description("")
+  String topMarginParams();
+  
+  @DefaultMessage("rightMargin")
+  @Description("")
+  String rightMarginParams();
+  
+  @DefaultMessage("bottomMargin")
+  @Description("")
+  String bottomMarginParams();
+  
+  @DefaultMessage("leftPadding")
+  @Description("")
+  String leftPaddingParams();
+  
+  @DefaultMessage("topPadding")
+  @Description("")
+  String topPaddingParams();
+  
+  @DefaultMessage("rightPadding")
+  @Description("")
+  String rightPaddingParams();
+  
+  @DefaultMessage("bottomMargin")
+  @Description("")
+  String bottomPaddingParams();
 
   //Events
   @DefaultMessage("AccelerationChanged")
@@ -5604,32 +5664,167 @@ public interface OdeMessages extends Messages {
   /**
    * @author tomislav tomsic
    * @email:tomsict@gmail.com
-   * TODO: Added for Abstract Reality Component 
-   * and further local development. Should put them into
-   * appropriate place 
+   * TODO: Added for Abstract Reality and 
+   * RealityCanvas Components. Intended for future
+   * local and git development. 
+   * Afterward, they should be put
+   *  into its appropriate places.
    */
-  
-  @DefaultMessage("StartAbstractReality")
-  @Description("Wow")
-  String StartAbstractRealityMethods();
-  
-  @DefaultMessage("AddArtefactToAbstractReality")
-  @Description("Wow")
-  String AddArtefactMethods();  
-  
-  @DefaultMessage("RemoveComponentFromAbstractReality")
-  @Description("Remove an artefact from abstract reality")
-  String RemoveArtefactMethods();  
-
-  @DefaultMessage("setARCameraBackground")
-  @Description("")
-  String SetARBackgroundMethods();
-  
-  @DefaultMessage("UseFront")
-  @Description("")
-  String UseFrontCameraProperties();
-  
+    
+  //To draw ring on cavnas
   @DefaultMessage("Fill")
   @Description("")
   String FillProperties();
+  
+  //To use dashed line while drawing rings 
+  //or balls, or not
+  @DefaultMessage("DashedLine")
+  @Description("")
+  String DashedLineProperties();
+  
+  @DefaultMessage("CursorPosition")
+  @Description("")
+  String CursorPositionProperties();
+  
+  @DefaultMessage("SelectText")
+  @Description("")
+  String SelectTextMethods();
+  
+  @DefaultMessage("AddCameraOverlay")
+  @Description("")
+  String AddOverlayMethods();
+
+  @DefaultMessage("NewLine")
+  @Description("")
+  String NewLineMethods();
+  
+  @DefaultMessage("Margin")
+  @Description("Set all-equal margins around visible component")
+  String MarginProperties();  
+  
+  @DefaultMessage("LeftMargin")
+  @Description("View's left margin")
+  String LeftMarginMethods();
+    
+  @DefaultMessage("TopMargin")
+  @Description("View's top margin")
+  String TopMarginMethods();
+  
+  @DefaultMessage("RightMargin")
+  @Description("View's right margin")
+  String RightMarginMethods();
+   
+  @DefaultMessage("BottomMargin")
+  @Description("View's bottom margin")
+  String BottomMarginMethods();
+  
+  @DefaultMessage("BottomMargins")
+  @Description("Set Bottom View Margin")
+  String setBottomMarginMethods();
+  
+  /***/
+  
+  @DefaultMessage("Padding")
+  @Description("Set all-equal component's pading")
+  String PaddingProperties();
+  
+  @DefaultMessage("LeftPadding")
+  @Description("Component's left pading")
+  String LeftPaddingMethods();
+
+  @DefaultMessage("TopPadding")
+  @Description("Component's top pading")
+  String TopPaddingMethods();
+  
+  @DefaultMessage("RightPadding")
+  @Description("Component's right pading")
+  String  RightPaddingMethods();
+  
+  @DefaultMessage("BottomPadding")
+  @Description("Component's bottom padding")
+  String  BottomPaddingMethods();
+  
+  @DefaultMessage("UseCanvas")
+  @Description("Add a canvas to abstract reality")
+  String UseCanvasMethods();  
+  
+  @DefaultMessage("ClearArea")
+  @Description("Clear canvas area")
+  String ClearAreaMethods();  
+  
+  @DefaultMessage(" AddPerspective")
+  @Description("Add perspective on a camera preview")
+  String AddPerspectiveMethods();  
+  //For Abstract Reality
+  @DefaultMessage("AddComponent")
+  @Description("Add component on a camera preview")
+  String AddComponentMethods();  
+    
+  @DefaultMessage("RemovePerspective")
+  @Description("Perspective from a camera preview")
+  String RemovePerspectiveMethods();  
+ 
+  @DefaultMessage("CameraTransparency")
+  @Description("Set Bottom Component's Padding")
+  String  CameraTransparencyProperties();
+  
+  @DefaultMessage("DrawNamedText")
+  @Description("Draws a named text, which name can be then put in a variable")
+  String DrawNamedTextMethods();  
+  
+  @DefaultMessage("DrawNamedText")
+  @Description("Draws a named text at an angle, which name can be then put in a variable")
+  String DrawNamedTextAtAngleMethods();  
+  
+  @DefaultMessage("DrawNamedText")
+  @Description("Draws a named circle, which name can be then put in a variable")
+  String DrawNamedCircleMethods();  
+  
+  @DefaultMessage("DrawNamedLine")
+  @Description("Draws a named line, which name can then be put in a variable")
+  String DrawNamedLineMethods();  
+  
+  @DefaultMessage("InsertNewLine")
+  @Description("Begins a new line in the text box.")
+  String InsertNewLineMethods();  
+  
+  @DefaultMessage("CollidingWithCanvasDrawing")
+  @Description("Collission with ordinary canvas drawing")
+  String CollidingWithCanvasDrawingMethods();  
+  
+  @DefaultMessage("SavePerspective")
+  @Description("Save Camera preview and it's overlay")
+  String SavePerspectiveMethods();  
+  
+  @DefaultMessage("SavePictureAs")
+  @Description("Save Camera picture with a given name.")
+  String SavePictureAsMethods(); 
+  
+  @DefaultMessage("SaveOverlayAs")
+  @Description("Save Camera overlay, with a given name.")
+  String SaveOverlayAsMethods();
+  
+  @DefaultMessage("SavePerspectiveAs")
+  @Description("Save Camera picture and its overlay, under a given name.")
+  String SavePerspectiveAsMethods(); 
+  
+//  @DefaultMessage("SavePicture")
+//  @Description("Save Camera picture")
+//  String SavePictureMethods(); 
+//  @DefaultMessage("WhichEdgeIsTouched")
+//  @Description("Which side is ")
+//  String WhichEdgeIsTouchedMethods();    
+  
+  @DefaultMessage("WhichCanvasEdgeIsTouched")
+  @Description("")
+  String WhichCanvasEdgeIsTouchedMethods();
+  
+  @DefaultMessage("GetWhichCanvasEdgeIsTouched")
+  @Description("")
+  String GetWhichCanvasEdgeIsTouchedMethods();
+    
+  @DefaultMessage("CollidedWithCanvasDrawing")
+  @Description("")
+  String CollidedWithCanvasDrawingEvents();
+  
 }

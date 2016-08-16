@@ -54,6 +54,7 @@ public abstract class Sprite extends VisibleComponent
   // Events are only raised when sprites are added to this collision set.  They
   // are removed when they no longer collide.
   private final Set<Sprite> registeredCollisions;
+  private final Set<String> registeredCanvasCollisions;
 
   // This variable prevents events from being raised before construction of
   // all components has taken place.  This was added to fix bug 2262218.
@@ -92,6 +93,13 @@ public abstract class Sprite extends VisibleComponent
   protected double headingSin;      // sine(heading)
 
   /**
+   * For edge TT, default is none, which is to say
+   * a zero.
+   */
+  
+  private int whichCanvasEdgeIsTouched=0;
+  
+  /**
    * Creates a new Sprite component.  This version exists to allow injection
    * of a mock handler for testing.
    *
@@ -111,7 +119,7 @@ public abstract class Sprite extends VisibleComponent
 
     // Maintain a list of collisions.
     registeredCollisions = new HashSet<Sprite>();
-
+    registeredCanvasCollisions = new HashSet<String>();
     // Set in motion.
     timerInternal = new TimerInternal(this, DEFAULT_ENABLED, DEFAULT_INTERVAL, handler);
 
@@ -124,6 +132,7 @@ public abstract class Sprite extends VisibleComponent
     Speed(DEFAULT_SPEED);
     Visible(DEFAULT_VISIBLE);
     Z(DEFAULT_Z);
+    
 
     container.$form().registerForOnDestroy(this);
   }
@@ -372,6 +381,16 @@ public abstract class Sprite extends VisibleComponent
         }});
   }
 
+//  protected void postEvent(final String drawing,
+//          final String eventName,
+//          final Object... args) {
+//androidUIHandler.post(new Runnable() {
+//public void run() {
+//EventDispatcher.dispatchEvent(drawing, eventName, args);
+//}});
+//}
+  
+  
   // TODO(halabelson): Fix collision detection for rotated sprites.
   /**
    * Handler for CollidedWith events, called when two sprites collide.
@@ -393,6 +412,17 @@ public abstract class Sprite extends VisibleComponent
     postEvent(this, "CollidedWith", other);
   }
 
+  @SimpleEvent
+  public void CollidedWithCanvasDrawing(String other) {
+    if (registeredCanvasCollisions.contains(other)) {
+      Log.e(LOG_TAG, "Collision between sprites and drawing " + this + " and "
+          + other + " re-registered");
+      return;
+    }
+    registeredCanvasCollisions.add(other);
+    postEvent(this, "CollidedWithCanvasDrawing", other);
+  }
+  
   /**
    * Handler for Dragged events.  On all calls, the starting coordinates
    * are where the screen was first touched, and the "current" coordinates
@@ -429,6 +459,7 @@ public abstract class Sprite extends VisibleComponent
         "indicates one of eight directions north(1), northeast(2), east(3), southeast(4), " +
         "south (-1), southwest(-2), west(-3), and northwest(-4).")
   public void EdgeReached(int edge) {
+	  WhichCanvasEdgeIsTouched(edge);
     if (edge == Component.DIRECTION_NONE
         || edge < Component.DIRECTION_MIN
         || edge > Component.DIRECTION_MAX) {
@@ -586,6 +617,11 @@ public abstract class Sprite extends VisibleComponent
   @SimpleFunction
   public boolean CollidingWith(Sprite other) {
     return registeredCollisions.contains(other);
+  }
+  
+  @SimpleFunction
+  public boolean CollidingWithCanvasDrawing(String other) {
+    return registeredCanvasCollisions.contains(other);
   }
 
   /**
@@ -952,4 +988,32 @@ public abstract class Sprite extends VisibleComponent
    * @param canvas the canvas on which to draw
    */
   protected abstract void onDraw(android.graphics.Canvas canvas);
+
+  /**
+   * Important note for future. At first I was unwilling to provide bot setter and getter
+   * for edge, but then it occurred to me that future AppInventor users could appreciate
+   * possibility to suddenly change their object's path, as if they bounced from the 
+   * canvas edge, thus also being able to use allready present logic.
+   * Also, I was thinking of only returning strings like left or right has been
+   * touched, but one can track numbers, and more easily program further decisions
+   * with them. After all, there are reasons why we mathematics. 
+   * Tomislav Tomsic
+   * 
+   */
+	@SimpleFunction(description = "Gets which canvas edge is reached."
+			+"Edge here is represented as an integer that " +
+	        "indicates one of eight directions north(1), northeast(2), east(3), southeast(4), " +
+	        "south (-1), southwest(-2), west(-3), and northwest(-4).")
+public int GetWhichCanvasEdgeIsTouched() {
+	return whichCanvasEdgeIsTouched;
+}
+
+	@SimpleFunction(description = "Sets which edge is touched. It is available for completness sake"
+			+ "or for yet unimagined uses" + "Edge here is represented as an integer that " +
+	        "indicates one of eight directions north(1), northeast(2), east(3), southeast(4), " +
+	        "south (-1), southwest(-2), west(-3), and northwest(-4).")
+public void WhichCanvasEdgeIsTouched(int value) {
+	this.whichCanvasEdgeIsTouched = value;
+}
+  
 }

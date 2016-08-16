@@ -143,6 +143,26 @@ abstract class MockButtonBase extends MockVisibleComponent {
         String height = DOM.getStyleAttribute(buttonWidget.getElement(), "height");
         DOM.setStyleAttribute(buttonWidget.getElement(), "borderRadius", height);
         break;
+      case 4:
+          // Button as Circle
+          DOM.setStyleAttribute(buttonWidget.getElement(), "borderRadius", "20px");
+          break;
+      case 5:
+    	  //Button as 1st quadrant
+    	  DOM.setStyleAttribute(buttonWidget.getElement(), "borderRadius", "22px");
+    	  break;
+      case 6:
+    	//Button as 2nd quadrant
+    	  DOM.setStyleAttribute(buttonWidget.getElement(), "borderRadius", "22px");
+    	  break;
+      case 7:
+    	//Button as 3rd quadrant
+    	  DOM.setStyleAttribute(buttonWidget.getElement(), "borderRadius", "22px");
+    	  break;
+      case 8:
+    	//Button as 4th quadrant
+    	  DOM.setStyleAttribute(buttonWidget.getElement(), "borderRadius", "22px");
+    	  break;
       default:
         // This should never happen
         throw new IllegalArgumentException("shape:" + shape);

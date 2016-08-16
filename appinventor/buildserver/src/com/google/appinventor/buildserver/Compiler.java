@@ -74,6 +74,8 @@ public final class Compiler {
   private static final String ARMEABI_V7A_SUFFIX = "-v7a";
   // Must match ComponentListGenerator.PERMISSIONS_TARGET
   private static final String PERMISSIONS_TARGET = "permissions";
+//Must match ComponentListGenerator.PERMISSIONS_TARGET
+ private static final String FEATURES_TARGET = "features";
   // Must match ComponentListGenerator.LIBRARIES_TARGET
   public static final String LIBRARIES_TARGET = "libraries";
   // Must match ComponentListGenerator.NATIVE_TARGET
@@ -137,6 +139,9 @@ public final class Compiler {
 
   private final ConcurrentMap<String, Set<String>> componentPermissions =
       new ConcurrentHashMap<String, Set<String>>();
+  
+  private final ConcurrentMap<String, Set<String>> componentFeatures =
+	      new ConcurrentHashMap<String, Set<String>>();
 
   private final ConcurrentMap<String, Set<String>> componentLibraries =
       new ConcurrentHashMap<String, Set<String>>();
@@ -225,6 +230,37 @@ public final class Compiler {
   }
 
   /*
+   * Generate the set of Android permissions needed by this project.
+   */
+  @VisibleForTesting
+  Set<String> generateFeatures() {
+    // Before we can use componentFeatures, we have to call loadJsonInfo() for permissions.
+    try {
+      loadJsonInfo(componentFeatures, FEATURES_TARGET);
+    } catch (IOException e) {
+      // This is fatal.
+      e.printStackTrace();
+      userErrors.print(String.format(ERROR_IN_STAGE, "Features"));
+      return null;
+    } catch (JSONException e) {
+      // This is fatal, but shouldn't actually ever happen.
+      e.printStackTrace();
+      userErrors.print(String.format(ERROR_IN_STAGE, "Features"));
+      return null;
+    }
+
+    Set<String> features = Sets.newHashSet();
+    for (String componentType : componentTypes) {
+      features.addAll(componentFeatures.get(componentType));
+    }
+    if (isForCompanion) {      // This is so ACRA can do a logcat on phones older then Jelly Bean
+      features.add("android.features.READ_LOGS");
+    }
+
+    return features;
+  }
+  
+  /*
    * Generate the set of Android libraries needed by this project.
    */
   @VisibleForTesting
@@ -309,7 +345,7 @@ public final class Compiler {
   /*
    * Creates an AndroidManifest.xml file needed for the Android application.
    */
-  private boolean writeAndroidManifest(File manifestFile, Set<String> permissionsNeeded) {
+  private boolean writeAndroidManifest(File manifestFile, Set<String> permissionsNeeded, Set<String> featuresNeeded) {
     // Create AndroidManifest.xml
     String mainClass = project.getMainClass();
     String packageName = Signatures.getPackageName(mainClass);
@@ -359,6 +395,10 @@ public final class Compiler {
       for (String permission : permissionsNeeded) {
         out.write("  <uses-permission android:name=\"" + permission + "\" />\n");
       }
+      
+      for (String feature : featuresNeeded) {
+          out.write("  <uses-feature android:name=\"" + feature + "\" />\n");
+        }
 
       // The market will use the following to filter apps shown to devices that don't support
       // the specified SDK version.  We right now support building for minSDK 4,
@@ -553,11 +593,20 @@ public final class Compiler {
       return false;
     }
     setProgress(15);
+    
+ // Determine android features.
+    out.println("________Determining features");
+    Set<String> featuresNeeded = compiler.generateFeatures();
+    if (featuresNeeded == null) {
+      return false;
+    }
+    setProgress(17);
+    
 
     // Generate AndroidManifest.xml
     out.println("________Generating manifest file");
     File manifestFile = new File(buildDir, "AndroidManifest.xml");
-    if (!compiler.writeAndroidManifest(manifestFile, permissionsNeeded)) {
+    if (!compiler.writeAndroidManifest(manifestFile, permissionsNeeded, featuresNeeded)) {
       return false;
     }
     setProgress(20);

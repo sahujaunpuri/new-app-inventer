@@ -7,6 +7,7 @@
 package com.google.appinventor.client.editor.simple.components;
 
 import static com.google.appinventor.client.Ode.MESSAGES;
+
 import com.google.appinventor.client.editor.simple.SimpleEditor;
 import com.google.appinventor.client.editor.youngandroid.properties.YoungAndroidLengthPropertyEditor;
 import com.google.appinventor.client.widgets.properties.TextPropertyEditor;
@@ -42,6 +43,7 @@ public abstract class MockVisibleComponent extends MockComponent {
   protected static final String PROPERTY_NAME_HEIGHT = "Height";
   protected static final String PROPERTY_NAME_COLUMN = "Column";
   protected static final String PROPERTY_NAME_ROW = "Row";
+  protected static final String PROPERTY_NAME_PADDING = "Padding";
 
   // Note: the values below are duplicated in Component.java
   // If you change them here, change them there!
@@ -57,6 +59,8 @@ public abstract class MockVisibleComponent extends MockComponent {
   // Useful colors
   protected static final String COLOR_NONE = "00FFFFFF";
   protected static final String COLOR_DEFAULT = "00000000";
+  //Padding
+  public int left, top, right, bottom = 0;
 
   /**
    * Creates a new instance of a visible component.
@@ -86,7 +90,7 @@ public abstract class MockVisibleComponent extends MockComponent {
     addProperty(PROPERTY_NAME_HEIGHT, "" + LENGTH_PREFERRED, MESSAGES.heightPropertyCaption(),
         new YoungAndroidLengthPropertyEditor());
   }
-
+  
   @Override
   protected boolean isPropertyVisible(String propertyName) {
     if (propertyName.equals(PROPERTY_NAME_COLUMN) ||

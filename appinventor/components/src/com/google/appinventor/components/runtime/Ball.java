@@ -18,6 +18,7 @@ import com.google.appinventor.components.runtime.util.PaintUtil;
 
 import android.app.Activity;
 import android.graphics.Canvas;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 
 /**
@@ -52,8 +53,13 @@ public final class Ball extends Sprite {
   private Paint paint;
   static final int DEFAULT_RADIUS = 5;
   private static final float DEFAULT_LINE_WIDTH = 2;
-  private static final int DEFAULT_PAINT_COLOR = Component.COLOR_BLACK;
+  //private static final int DEFAULT_PAINT_COLOR = Component.COLOR_BLACK;
   private boolean Fill;
+  
+  private boolean DashedLine;
+//  private static final float LineGap = 0;
+//  private static final float LinePart = 10;
+  
 
   public Ball(ComponentContainer container) {
     super(container);
@@ -66,6 +72,9 @@ public final class Ball extends Sprite {
     PaintColor(Component.COLOR_BLACK);
     Radius(DEFAULT_RADIUS);
     Fill(true);
+    DashedLine(false);
+//    LineGap=0;
+//    LineDrawn=10;
   }
 
   // Implement or override methods
@@ -90,6 +99,10 @@ public final class Ball extends Sprite {
       p.setStyle(Fill ? Paint.Style.FILL : Paint.Style.STROKE);
       canvas.drawCircle(correctedXLeft + correctedRadius, correctedYTop +
           correctedRadius, correctedRadius, p);
+      if(DashedLine){
+          p.setPathEffect(new DashPathEffect(new float []{8, 3 }, 0));
+      }
+      registerChange();
     }
   }
 
@@ -217,17 +230,43 @@ public final class Ball extends Sprite {
   }
 
   /**
-   * Specifies whether the will be filled
+   * Specifies whether the ball will be filled
    *
    * @param front
-   *          {@code true} for front-facing camera, {@code false} for default
+   *         for {@code true} it will be filled,  {@code false} is for default 
    */
   @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_BOOLEAN, defaultValue = "True")
   @SimpleProperty(description = "Specifies whether ball will be filled or not. "
     + "If true, which is default value, it will be filled. "
     + "Otherwise it will be circle.")
-  public void Fill (boolean newValue) {
-    Fill = newValue;
+  public void Fill (boolean notFilled) {
+    Fill = notFilled;
   }
+
+  /**
+   * Returns true if dashed line is to be used
+   *
+   * @return {@code true} indicates that dashed line will be used,
+   *  {@code false} for default.
+   */
+  @SimpleProperty(
+    category = PropertyCategory.BEHAVIOR)
+public boolean DashedLine() {
+	return DashedLine;
+}
+
+  /**
+   * Specifies whether the ball will be filled
+   *
+   * @param front
+   *         for {@code true} it will be filled,  {@code false} is for default 
+   */
+  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_BOOLEAN, defaultValue = "False")
+  @SimpleProperty(description = "Specifies whether ball will be filled or not. "
+    + "If true, which is default value, it will be filled. "
+    + "Otherwise it will be circle.")
+public void DashedLine(boolean dashedLine) {
+	DashedLine = dashedLine;
+}
   
 }

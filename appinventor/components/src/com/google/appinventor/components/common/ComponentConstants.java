@@ -25,7 +25,11 @@ public class ComponentConstants {
 
   public static final int EMPTY_HV_ARRANGEMENT_WIDTH = 100;
   public static final int EMPTY_HV_ARRANGEMENT_HEIGHT = 100;
-
+  /**
+   * Margins and padding
+   */
+ public static final int MARGIN_DEFAULT = 0;
+ public static final int PADDING_DEFAULT = 0;
   /**
    * Canvas component.
    */
@@ -73,7 +77,7 @@ public class ComponentConstants {
    * Abstract Reality Component
    */
   
-  public static final int TRANSPARENCY = 100;
+  //public static final int TRANSPARENCY = 100;
   public static final int ROTATION = 90;
   
 }

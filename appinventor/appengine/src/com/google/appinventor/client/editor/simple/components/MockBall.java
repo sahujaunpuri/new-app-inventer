@@ -27,6 +27,11 @@ public final class MockBall extends MockVisibleComponent implements MockSprite {
   private static final String PROPERTY_NAME_PAINTCOLOR = "PaintColor";
 
   private static final int DEFAULT_RADIUS = 5;
+  
+  //
+  private static final String PROPERTY_NAME_FILL = "Fill";
+  private static final String PROPERTY_NAME_LINEWIDTH = "LineWidth";
+  
 
   // Widget for showing the mock ball
   private final SimplePanel ballWidget;
@@ -35,6 +40,11 @@ public final class MockBall extends MockVisibleComponent implements MockSprite {
   private int radius = DEFAULT_RADIUS;
   private int diameter = 2 * radius;
   private Color color = Color.BLACK;
+      
+  //
+  private boolean Fill;
+  private double lineWidth = 2.00;
+  
 
   /**
    * Creates a new MockBall component.
@@ -52,7 +62,9 @@ public final class MockBall extends MockVisibleComponent implements MockSprite {
     canvas = new GWTCanvas(diameter, diameter);
     canvas.setPixelSize(diameter, diameter);
     canvas.setBackgroundColor(GWTCanvas.TRANSPARENT);
-    fillCircle();
+    setFill("false");
+    drawCircularEntity();
+    //fillCircle();
     ballWidget.setWidget(canvas);
 
     initComponent(ballWidget);
@@ -60,6 +72,22 @@ public final class MockBall extends MockVisibleComponent implements MockSprite {
 
   // Drawing
 
+  private void drawCircularEntity(){
+	  if(Fill){
+		  fillCircle();
+	  } else{
+		    canvas.clear();
+		    canvas.setFillStyle(color);
+		    canvas.beginPath();
+		    int x = radius;
+		    int y = radius;
+		    canvas.setLineWidth(lineWidth);
+		    canvas.arc(x, y, radius, 0, Math.PI * 2, true);
+		    canvas.stroke();
+		    canvas.closePath();		    		 
+	  }
+  }
+  
   private void fillCircle() {
     canvas.clear();
     canvas.setFillStyle(color);
@@ -78,7 +106,8 @@ public final class MockBall extends MockVisibleComponent implements MockSprite {
       diameter = 2 * radius;
       canvas.setCoordSize(diameter, diameter);
       canvas.setPixelSize(diameter, diameter);
-      fillCircle();
+      //fillCircle();
+      drawCircularEntity();
     } catch (NumberFormatException e) {
       // Ignore this. If we throw an exception here, the project is unrecoverable.
     }
@@ -89,7 +118,8 @@ public final class MockBall extends MockVisibleComponent implements MockSprite {
       text = "&HFF000000";  // black
     }
     color = MockComponentsUtil.getColor(text);
-    fillCircle();
+    //fillCircle();
+    drawCircularEntity();
   }
 
   private void setZProperty(String text) {
@@ -116,7 +146,15 @@ public final class MockBall extends MockVisibleComponent implements MockSprite {
     }
   }
 
-  @Override
+  public void setFill(String propertyName) {
+	  Fill = Boolean.parseBoolean(propertyName);
+}
+
+public void setLineWidth(String propertyName) {
+	this.lineWidth = Double.parseDouble(propertyName);
+}
+  
+@Override
   protected boolean isPropertyVisible(String propertyName) {
     if (propertyName.equals(PROPERTY_NAME_WIDTH) ||
         propertyName.equals(PROPERTY_NAME_HEIGHT)) {
@@ -125,7 +163,7 @@ public final class MockBall extends MockVisibleComponent implements MockSprite {
     return super.isPropertyVisible(propertyName);
   }
 
-  @Override
+@Override
   public int getPreferredWidth() {
     // The superclass uses getOffsetWidth, which won't work for us.
     return diameter;
@@ -145,12 +183,19 @@ public final class MockBall extends MockVisibleComponent implements MockSprite {
       refreshForm();
     } else if (propertyName.equals(PROPERTY_NAME_PAINTCOLOR)) {
       setColorProperty(newValue);
+      refreshForm();
     } else if (propertyName.equals(PROPERTY_NAME_Z)) {
       setZProperty(newValue);
     } else if (propertyName.equals(PROPERTY_NAME_X)) {
       setXProperty(newValue);
     } else if (propertyName.equals(PROPERTY_NAME_Y)) {
       setYProperty(newValue);
+    }else if (propertyName.equals(PROPERTY_NAME_FILL)){
+    	setFill(newValue);
+    	refreshForm();
+    }else if (propertyName.equals(PROPERTY_NAME_LINEWIDTH)){
+    	setLineWidth(newValue);
+    	refreshForm();
     }
   }
 }

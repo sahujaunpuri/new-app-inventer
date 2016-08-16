@@ -79,5 +79,5 @@ public abstract class VisibleComponent implements Component {
    */
   @SimpleProperty(
       category = PropertyCategory.APPEARANCE)
-  public abstract void HeightPercent(int hPercent);
+  public abstract void HeightPercent(int hPercent);  
 }

@@ -16,11 +16,13 @@ import com.google.appinventor.components.common.PropertyTypeConstants;
 import com.google.appinventor.components.runtime.util.MediaUtil;
 import com.google.appinventor.components.runtime.util.TextViewUtil;
 import com.google.appinventor.components.runtime.util.ViewUtil;
+
 import android.view.MotionEvent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.ArcShape;
 import android.graphics.drawable.shapes.OvalShape;
 import android.graphics.drawable.shapes.RectShape;
 import android.graphics.drawable.shapes.RoundRectShape;
@@ -245,8 +247,13 @@ public abstract class ButtonBase extends AndroidViewComponent
    *
    * @return  one of {@link Component#BUTTON_SHAPE_DEFAULT},
    *          {@link Component#BUTTON_SHAPE_ROUNDED},
-   *          {@link Component#BUTTON_SHAPE_RECT} or
-   *          {@link Component#BUTTON_SHAPE_OVAL}
+   *          {@link Component#BUTTON_SHAPE_RECT}, 
+   *          {@link Component#BUTTON_SHAPE_OVAL},
+   *          {@link Component#BUTTON_SHAPE_CIRCLE},
+   *          {@link Component#BUTTON_SHAPE_LEFT_FACING_PACMAN},
+   *          {@link Component#BUTTON_SHAPE_RIGHT_FACING_PACMAN},
+   *          {@link Component#BUTTON_SHAPE_TOP_FACING_PACMAN} or
+   *          {@link Component#BUTTON_SHAPE_BOTTOM_FACING_PACMAN}
    */
   @SimpleProperty(
       category = PropertyCategory.APPEARANCE,
@@ -402,6 +409,22 @@ public abstract class ButtonBase extends AndroidViewComponent
       case Component.BUTTON_SHAPE_OVAL:
         drawable.setShape(new OvalShape());
         break;
+      case Component.BUTTON_SHAPE_CIRCLE:
+          drawable.setShape(new ArcShape(270,360));
+          drawable.setIntrinsicHeight(drawable.getIntrinsicWidth());
+          break;
+      case Component.BUTTON_SHAPE_1ST_QUADRANT:
+    	  drawable.setShape(new ArcShape(270,90));
+          break;
+      case Component.BUTTON_SHAPE_2ND_QUADRANT:
+    	  drawable.setShape(new ArcShape(180,90));
+          break;
+      case Component.BUTTON_SHAPE_3RD_QUADRANT:
+    	  drawable.setShape(new ArcShape(90,90));
+          break;    
+      case Component.BUTTON_SHAPE_4TH_QUADRANT:
+    	  drawable.setShape(new ArcShape(0,90));
+          break;    
       default:
         throw new IllegalArgumentException();
     }

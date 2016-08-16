@@ -20,7 +20,12 @@ public class YoungAndroidButtonShapeChoicePropertyEditor extends ChoicePropertyE
     new Choice(MESSAGES.defaultButtonShape(), "0"),
     new Choice(MESSAGES.roundedButtonShape(), "1"),
     new Choice(MESSAGES.rectButtonShape(), "2"),
-    new Choice(MESSAGES.ovalButtonShape(), "3")
+    new Choice(MESSAGES.ovalButtonShape(), "3"),
+    new Choice(MESSAGES.circleButtonShape(), "4"),
+    new Choice(MESSAGES.firstQuadrantButtonShape(), "5"),
+    new Choice(MESSAGES.secondQuadrantButtonShape(), "6"),
+    new Choice(MESSAGES.thirdQuadrantButtonShape(), "7"),
+    new Choice(MESSAGES.fourthQuadrantButtonShape(), "8")
   };
 
   public YoungAndroidButtonShapeChoicePropertyEditor() {

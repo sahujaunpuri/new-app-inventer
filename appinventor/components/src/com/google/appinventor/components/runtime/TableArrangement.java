@@ -8,6 +8,7 @@ package com.google.appinventor.components.runtime;
 
 import com.google.appinventor.components.annotations.DesignerComponent;
 import com.google.appinventor.components.annotations.DesignerProperty;
+import com.google.appinventor.components.annotations.PropertyCategory;
 import com.google.appinventor.components.annotations.SimpleObject;
 import com.google.appinventor.components.annotations.SimpleProperty;
 import com.google.appinventor.components.common.ComponentCategory;
@@ -34,6 +35,8 @@ public class TableArrangement extends AndroidViewComponent
 
   // Layout
   private final TableLayout viewLayout;
+	// Backing for background color
+	private int backgroundColor;
 
   /**
    * Creates a new TableArrangement component.
@@ -47,6 +50,8 @@ public class TableArrangement extends AndroidViewComponent
     viewLayout = new TableLayout(context, 2, 2);
 
     container.$add(this);
+    
+    BackgroundColor(Component.COLOR_DEFAULT);
   }
 
   /**
@@ -157,4 +162,33 @@ public class TableArrangement extends AndroidViewComponent
   public View getView() {
     return viewLayout.getLayoutManager();
   }
+  
+	/**
+	 * Returns the component's background color as an alpha-red-green-blue
+	 * integer.
+	 *
+	 * @return background RGB color with alpha
+	 */
+	@SimpleProperty(category = PropertyCategory.APPEARANCE, description = "Returns the component's background color")
+	public int BackgroundColor() {
+		return backgroundColor;
+	}
+
+	/**
+	 * Specifies the button's background color as an alpha-red-green-blue
+	 * integer. If the parameter is {@link Component#COLOR_DEFAULT}, the
+	 * original beveling is restored. If an Image has been set, the color change
+	 * will not be visible until the Image is removed.
+	 *
+	 * @param argb
+	 *            background RGB color with alpha
+	 */
+	@DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_COLOR, defaultValue = Component.DEFAULT_VALUE_COLOR_DEFAULT)
+	@SimpleProperty(description = "Specifies the component's background color. "
+			+ "The background color will not be visible if an Image is being displayed.")
+	public void BackgroundColor(int argb) {
+		backgroundColor = argb;
+		// getView().setBackgroundColor(argb);
+		getView().invalidate();
+	}
 }

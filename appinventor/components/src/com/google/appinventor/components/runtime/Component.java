@@ -47,6 +47,11 @@ public interface Component {
   static final int BUTTON_SHAPE_ROUNDED = 1;
   static final int BUTTON_SHAPE_RECT = 2;
   static final int BUTTON_SHAPE_OVAL = 3;
+  static final int BUTTON_SHAPE_CIRCLE = 4;
+  static final int BUTTON_SHAPE_1ST_QUADRANT = 5;
+  static final int BUTTON_SHAPE_2ND_QUADRANT = 6;
+  static final int BUTTON_SHAPE_3RD_QUADRANT = 7;
+  static final int BUTTON_SHAPE_4TH_QUADRANT = 8;
 
   /*
    * Color constants.

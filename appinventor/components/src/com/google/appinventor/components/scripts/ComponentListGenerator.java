@@ -22,6 +22,7 @@ import javax.tools.FileObject;
 public final class ComponentListGenerator extends ComponentProcessor {
   // Names of component information types to be output. Must match buildserver.compiler constants.
   private static final String PERMISSIONS_TARGET = "permissions";
+  private static final String FEATURES_TARGET = "features";
   private static final String LIBRARIES_TARGET = "libraries";
   private static final String ASSETS_TARGET = "assets";
   private static final String NATIVE_TARGET = "native";
@@ -78,6 +79,7 @@ public final class ComponentListGenerator extends ComponentProcessor {
     sb.append("{\"name\": \"");
     sb.append(component.name + "\"");
     appendComponentInfo(sb, PERMISSIONS_TARGET, component.permissions);
+    appendComponentInfo(sb, FEATURES_TARGET, component.features);
     appendComponentInfo(sb, LIBRARIES_TARGET, component.libraries);
     appendComponentInfo(sb, NATIVE_TARGET, component.nativeLibraries);
     appendComponentInfo(sb, ASSETS_TARGET, component.assets);
